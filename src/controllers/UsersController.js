@@ -71,33 +71,6 @@ const UsersController = {
       return res.status(500).json({ msg: err.message });
     }
   },
-  updateInfor: async (req, res) => {
-    try {
-      const { oldPassword, newPassword } = req.body;
-
-      const user = await User.findById(req.user.id);
-      if (!user) {
-        return res.status(400).json({ user: "User does not exist" });
-      }
-
-      // validate old password
-      const isValidPassword = await bcrypt.compare(oldPassword, user.password);
-      if (!isValidPassword) {
-        return res.status(400).json({ password: "Incorrect Password" });
-      }
-
-      // hash new password
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-      // update user's password
-      user.password = hashedPassword;
-      const updatedUser = await user.save();
-
-      return res.json({ user: updatedUser });
-    } catch (err) {
-      return res.status(500).json({ msg: err.message });
-    }
-  },
   statisticsNumberExam: async (req, res) => {
     try {
       const statisticsNumberExam = await Exam.aggregate([

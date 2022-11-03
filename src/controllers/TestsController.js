@@ -157,17 +157,6 @@ const TestsController = {
       return res.status(500).json({ msg: err.message })
     }
   },
-  detail: async (req, res) => {
-    try {
-      const testDetail = await Test.findOne({ _id: req.params.id }).populate('category').populate('questions')
-
-      if (!testDetail) return res.status(400).json({ msg: 'There are no test' })
-
-      res.json({ testDetail })
-    } catch (err) {
-      return res.status(500).json({ msg: err.message })
-    }
-  }
 }
 
 module.exports = TestsController
