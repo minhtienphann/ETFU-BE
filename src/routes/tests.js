@@ -26,6 +26,4 @@ router.delete("/delete/:id", authAdmin, testsController.delete);
 
 router.put("/update/:id", upload.single("image"), testsController.update);
 
-router.get("/detail/:id", testsController.detail);
-
 module.exports = router;

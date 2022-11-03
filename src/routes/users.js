@@ -12,8 +12,6 @@ router.get('/logout', usersController.logout)
 
 router.get('/infor', auth, usersController.infor)
 
-router.put('/infor', auth, usersController.updateInfor)
-
 router.get('/infor/statisticsNumberExam', auth, usersController.statisticsNumberExam)
 
 router.get('/infor/statisticsScoreExam', auth, usersController.statisticsScoreExam)
