@@ -103,8 +103,6 @@ const TestsController = {
   create: async (req, res) => {
     try {
       const { title, content, description, questions, category, video } = req.body
-      console.log("CHECK>>>>>>",req.body)
-      console.log("req.file.filename ", req.file.filename);
 
       const image = { name: 'http://localhost:3000/' + req.file.filename }
 
