@@ -6,21 +6,28 @@ const { json } = require('body-parser');
 
 const PostsController = {
     show: async (req, res)=>{
-        const {type, search, page} = req.query
+        const {type, search} = req.query
         const filter = []
+        const page = parseInt(req.query.page) - 1 || 0
+      const limit = parseInt(req.query.limit) || 6
         if(type) filter.push({$match:{type:type}})
-        if(type){var posts = await Post.aggregate(filter)}
-        else {var posts = await Post.find()}
+        if (search && filter.length != 0) filter[0].$match.title = { $regex: search.replace(/  +/g, ' ').trim().toLowerCase(), $options: 'i' }
+        else filter.push({$match:{title:{ $regex: search.replace(/  +/g, ' ').trim().toLowerCase(), $options: 'i' }}})
+          filter.push({
+            $lookup: {
+              from: 'users',
+              localField: 'owner',
+              foreignField: '_id',
+              as: 'userInfo'
+            }
+          })
+        if(filter.length != 0){var posts = await Post.aggregate(filter).skip(page * limit).limit(limit)}
         if(posts) res.status(200).json(posts)
     },
     create: async (req, res)=>{
-        const {title, type, content, image} = req.body
-        console.log("CHECK: ",title)
-        console.log("CHECK: ",type)
-        console.log("CHECK: ",content)
-        console.log("CHECK: ",image)
-        var reqData = req.body
-        console.log("CHECK....: ", reqData)
+        console.log("CHECK....: ", req.body)
+        const {title, content, image} = req.body
+        const type = req.body.type
         const accessToken = req.header('Authorization').split(' ')[1]
         var decoded = jwt.decode(accessToken, process.env.ACCESS_TOKEN_SECRET, {complete: true})
         const owner = decoded.id;
