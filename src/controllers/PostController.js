@@ -26,7 +26,9 @@ const PostsController = {
     },
     create: async (req, res)=>{
         console.log("CHECK....: ", req.body)
-        const {title, content, image} = req.body
+        const {title, content} = req.body
+        const image = { name: 'http://localhost:3000/' + req.file.filename }
+        if (!image) return res.status(400).json({ msg: 'No image upload' })
         const type = req.body.type
         const accessToken = req.header('Authorization').split(' ')[1]
         var decoded = jwt.decode(accessToken, process.env.ACCESS_TOKEN_SECRET, {complete: true})
@@ -42,6 +44,12 @@ const PostsController = {
         })
         await post.save()
         return res.status(200).json({msg:"Post Blog Successfully"})
+    },
+    detail: async (req, res) => {
+      console.log("CHECK [GET] DETAIL REQ: ",req.query)
+      const blogDetail = await Post.findOne({ _id: req.params.id })
+      if(blogDetail) res.status(200).json(blogDetail)
+      else res.status(404).json({ msg: 'There are no blog' })
     }
 }
 
