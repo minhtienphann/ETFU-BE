@@ -46,11 +46,11 @@ const PostsController = {
         return res.status(200).json({msg:"Post Blog Successfully"})
     },
     detail: async (req, res) => {
-      console.log("CHECK [GET] DETAIL REQ: ",req.query)
-      const blogDetail = await Post.findOne({ _id: req.params.id })
+      console.log("CHECK [GET] DETAIL REQ: ",req.params.id)
+      const blogDetail = await Post.findOne({ _id: req.params.id }).populate('owner')
       if(blogDetail) res.status(200).json(blogDetail)
       else res.status(404).json({ msg: 'There are no blog' })
-    }
+    },
 }
 
 module.exports = PostsController
