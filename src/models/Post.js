@@ -18,15 +18,16 @@ const Post = new Schema({
     image: {
         type: Object
       },
-    comments:[{
-        user: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        comment:{
-            type: String,
-        },
-    }]
+    comments:[
+        {
+            commentOwner: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            email: String,
+            content: String
+        }
+    ]
 },{timestamps: true}
 )
 
