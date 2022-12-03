@@ -56,10 +56,11 @@ const PostsController = {
         const blogDetail = await Post.findById({_id:req.params.id})
         if(blogDetail){
           const{owner, title, type, content, image, comments} = blogDetail
-          console.log('blogDetail: ',blogDetail)
           const newComments = req.body.comments
+          console.log('newComments: ',newComments)
           // comments = newComments
-          const updateBlogDetail = Post.update({_id:req.params.id},{$set:{owner:owner, title: title, type:type, content:content, image:image, comments:newComments}})
+          const blogDetailUpdated = await Post.update({_id:req.params.id},{$set:{"owner":owner, "title": title, "type":type, "content":content, "image":image, "comments":newComments}})
+          console.log('CHECK>>>>>>>> ',blogDetailUpdated)
           res.status(200).json({msg:'Successfully'})
         }
       } catch (error) {
