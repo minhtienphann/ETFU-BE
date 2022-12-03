@@ -32,7 +32,7 @@ const PostsController = {
         if (!image) return res.status(400).json({ msg: 'No image upload' })
         const type = req.body.type
         const owner = req.user.id
-        const user = await User.findById(decoded.id)
+        const user = await User.findById(owner)
         if(!user) return res.status(400).json({ msg: 'User not available on system' })
         const post = new Post({
             owner,
