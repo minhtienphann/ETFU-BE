@@ -20,10 +20,7 @@ const Post = new Schema({
       },
     comments:[
         {
-            commentOwner: {
-                type: Schema.Types.ObjectId,
-                ref: 'User'
-            },
+            commentOwner: String,
             email: String,
             content: String
         }
