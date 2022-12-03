@@ -23,7 +23,22 @@ const PostsController = {
             }
           })
         if(filter.length != 0){var posts = await Post.aggregate(filter).skip(page * limit).limit(limit).sort({createdAt:-1})}
-        if(posts) res.status(200).json(posts)
+        filter.push({
+          $group: {
+            _id: null,
+            count: {
+              $sum: 1
+            }
+          }
+        })
+        const total = (await Post.aggregate(filter))[0]?.count
+        const resopnse = {
+          totalPage: Math.ceil(total / limit),
+          currentPage: page + 1,
+          postCount: total,
+          posts
+        }
+        if(posts) res.status(200).json(resopnse)
     },
     create: async (req, res)=>{
         console.log("CHECK....: ", req.body)
