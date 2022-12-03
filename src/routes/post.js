@@ -17,7 +17,8 @@ const upload = multer({ storage });
 
 
 router.get("/",  PostsController.show)
-router.post("/create", upload.single("image"),PostsController.create)
+router.post("/create", auth ,upload.single("image"),PostsController.create)
 router.get("/detail/:id", PostsController.detail)
+router.put("/detail/:id", PostsController.addComment)
 
 module.exports = router

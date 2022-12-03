@@ -2,6 +2,7 @@ const { Types } = require('mongoose')
 const jwt = require("jsonwebtoken");
 const Post = require('../models/Post')
 const User = require("../models/User");
+const Comment = require("../models/Comment");
 const { json } = require('body-parser');
 
 const PostsController = {
@@ -30,9 +31,7 @@ const PostsController = {
         const image = { name: 'http://localhost:3000/' + req.file.filename }
         if (!image) return res.status(400).json({ msg: 'No image upload' })
         const type = req.body.type
-        const accessToken = req.header('Authorization').split(' ')[1]
-        var decoded = jwt.decode(accessToken, process.env.ACCESS_TOKEN_SECRET, {complete: true})
-        const owner = decoded.id;
+        const owner = req.user.id
         const user = await User.findById(decoded.id)
         if(!user) return res.status(400).json({ msg: 'User not available on system' })
         const post = new Post({
@@ -47,10 +46,27 @@ const PostsController = {
     },
     detail: async (req, res) => {
       console.log("CHECK [GET] DETAIL REQ: ",req.params.id)
-      const blogDetail = await Post.findOne({ _id: req.params.id }).populate('owner')
+      const blogDetail = await Post.findOne({ _id: req.params.id }).populate('owner').populate('comments')
       if(blogDetail) res.status(200).json(blogDetail)
       else res.status(404).json({ msg: 'There are no blog' })
     },
+    addComment: async (req, res) => {
+      console.log('BOody :',req.params.id)
+      try {
+        const blogDetail = await Post.findById({_id:req.params.id})
+        if(blogDetail){
+          const{owner, title, type, content, image, comments} = blogDetail
+          console.log('blogDetail: ',blogDetail)
+          const newComments = req.body.comments
+          // comments = newComments
+          const updateBlogDetail = Post.update({_id:req.params.id},{$set:{owner:owner, title: title, type:type, content:content, image:image, comments:newComments}})
+          res.status(200).json({msg:'Successfully'})
+        }
+      } catch (error) {
+        console.log("error: " + error)
+        res.status(500).json({msg:'error updating'})
+      }
+    }
 }
 
 module.exports = PostsController
