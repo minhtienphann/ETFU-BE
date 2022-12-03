@@ -22,7 +22,7 @@ const PostsController = {
               as: 'userInfo'
             }
           })
-        if(filter.length != 0){var posts = await Post.aggregate(filter).skip(page * limit).limit(limit)}
+        if(filter.length != 0){var posts = await Post.aggregate(filter).skip(page * limit).limit(limit).sort({createdAt:-1})}
         if(posts) res.status(200).json(posts)
     },
     create: async (req, res)=>{
